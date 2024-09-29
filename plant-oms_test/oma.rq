@@ -1,0 +1,21 @@
+# SPARQL endpoint: https://sparql.omabrowser.org/sparql/
+
+PREFIX oo: <http://purl.org/net/orth#>
+PREFIX upTax: <http://purl.uniprot.org/taxonomy/>
+PREFIX lscr: <http://purl.org/lscr#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX sio: <http://semanticscience.org/resource/>
+
+SELECT DISTINCT ?entrez_id2
+WHERE {
+  ?group oo:hasHomologousMember+ ?member1 , ?member2 .
+  ?group oo:hasTaxonomicRange upTax:3193 .  # Define taxonomy range
+  ?member1 a oo:Protein .
+  ?member2 a oo:Protein .
+  ?member1 oo:organism <https://omabrowser.org/oma/genome/3702> .  # Taxid for query (member1)
+  ?member2 oo:organism <https://omabrowser.org/oma/genome/3847> .  # Taxid for search (member2)
+  ?member1 sio:SIO_010079/lscr:xrefNCBIGene/dct:identifier ?entrez_id1 .
+  VALUES (?entrez_id1) { ("817599") }  # Gene ID for query
+  ?member2 sio:SIO_010079/lscr:xrefNCBIGene/dct:identifier ?entrez_id2 .
+}
+ORDER BY (?entrez_id2)
