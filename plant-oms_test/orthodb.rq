@@ -1,0 +1,24 @@
+# SPARQL endpoint: https://sparql.orthodb.org/sparql
+
+PREFIX orthodb: <http://purl.orthodb.org/>
+PREFIX upTax: <http://purl.uniprot.org/taxonomy/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX up: <http://purl.uniprot.org/core/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+
+SELECT DISTINCT ?entrez_id2
+WHERE {
+  ?group orthodb:ogBuiltAt upTax:3193 .
+  ?group orthodb:hasMember ?member1 , ?member2 .
+  ?member1 rdfs:seeAlso ?member_entrez1 ;
+      up:organism ?odb_organism1 .
+  ?member2 rdfs:seeAlso ?member_entrez2 ;
+      up:organism ?odb_organism2 .
+  ?odb_organism1 obo:RO_0002162 upTax:3702 . # Taxid for query (member1)
+  ?odb_organism2 obo:RO_0002162 upTax:3847 . # Taxid for search (member2)
+  ?member_entrez1 a orthodb:Entrezgene ;
+      rdfs:label "817599" .  # Gene ID for query
+  ?member_entrez2 a orthodb:Entrezgene ;
+      rdfs:label ?entrez_id2 .
+}
+ORDER BY (?entrez_id2)
